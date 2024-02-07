@@ -158,12 +158,27 @@ namespace StudentPortal.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 StudentId = user.StudentId,
+                Email = user.Email
+            };
+            return View(md);
+        }
+
+        public ActionResult EditProfile()
+        {
+            var id = User.Identity.GetUserId();
+            var user = ApplicationDbContext.Users.FirstOrDefault(c => c.Id == id);
+            var md = new Profile()
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                StudentId = user.StudentId,
+                Email = user.Email
             };
             return View(md);
         }
 
         [HttpPost]
-        public ActionResult Profile(Profile model)
+        public ActionResult EditProfile(Profile model)
         {
             if (!ModelState.IsValid)
             {
