@@ -29,6 +29,9 @@ namespace StudentPortal.Models
         {
         }
 
+        public DbSet<Course> Course { get; set; }
+        public DbSet<CourseEnrollment> CourseEnrollment { get; set; }
+
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();

@@ -1,0 +1,45 @@
+﻿@model StudentPortal.Models.Course
+@{
+    ViewBag.Title = "Course Detail";
+    bool isEnrolled = ViewBag.Isenrolled != null ? (bool)ViewBag.IsEnrolled : false;
+}
+
+<h2>Course Detail</h2>
+
+<h3>@Model.Title</h3>
+
+<h4>Fee : £@Model.Fee</h4>
+
+<p>@Model.Description</p>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <button class="btn btn-default" disabled="@isEnrolled" onclick="enroll(@Model.CourseId)">Enroll</button>
+}
+
+<script>
+    function enroll(courseId) {
+        $.ajax({
+            url: "/Home/EnrollCourse",
+            type: "POST",
+            data: { courseId: courseId },
+            success: function (data) {
+                enrollCourseRsponse(data);
+            },
+            error: function (result) {
+                console.log(result)
+            }
+        })
+    }
+
+    function enrollCourseRsponse(result) {
+        if (result)
+            toastr.success('Enrolled successfully.');
+        else
+            toastr.error('Some error occured.')
+
+        setTimeout(function () {
+            window.location.href = window.location.href;
+        }, 2000)
+    }
+</script>
