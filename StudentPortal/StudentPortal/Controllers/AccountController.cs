@@ -20,16 +20,21 @@ namespace StudentPortal.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private ApplicationDbContext _dbContext;
+        private FinancePortalHelper _financeHelper;
 
         public AccountController()
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ApplicationDbContext context)
+        public AccountController(ApplicationUserManager userManager,
+            ApplicationSignInManager signInManager,
+            ApplicationDbContext context,
+            FinancePortalHelper financeHelper)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             ApplicationDbContext = context;
+            FinanceHelper = financeHelper;
         }
 
         public ApplicationDbContext ApplicationDbContext
@@ -65,6 +70,18 @@ namespace StudentPortal.Controllers
             private set
             {
                 _userManager = value;
+            }
+        }
+
+        public FinancePortalHelper FinanceHelper
+        {
+            get
+            {
+                return _financeHelper ?? HttpContext.GetOwinContext().Get<FinancePortalHelper>();
+            }
+            private set
+            {
+                _financeHelper = value;
             }
         }
 
@@ -133,6 +150,10 @@ namespace StudentPortal.Controllers
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    //Register User with Finance Portal
+                    FinanceHelper.RegisterUser(studentId);
+
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link

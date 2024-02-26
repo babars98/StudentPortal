@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using StudentPortal.BL;
 using StudentPortal.Models;
 using System;
 using System.Collections.Generic;
@@ -99,7 +100,7 @@ namespace StudentPortal.Controllers
         /// </summary>
         /// <param name="courseId"></param>
         /// <returns></returns>
-        public JsonResult EnrollCourse(int courseId)
+        public JsonResult EnrollCourse(int courseId, double courseFee)
         {
             var courseEnrollment = new CourseEnrollment()
             {
@@ -111,6 +112,13 @@ namespace StudentPortal.Controllers
             ApplicationDbContext.CourseEnrollment.Add(courseEnrollment);
 
             ApplicationDbContext.SaveChanges();
+
+            var financeHelper = new FinancePortalHelper();
+
+            var userId = User.Identity.GetUserId();
+
+            //Create Invoice in finance portal for Course fee
+            financeHelper.CreateInvoice(userId, courseFee);
 
             return Json(new { data = true });
         }
