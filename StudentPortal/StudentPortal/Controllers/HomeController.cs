@@ -4,6 +4,7 @@ using StudentPortal.BL;
 using StudentPortal.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -96,16 +97,18 @@ namespace StudentPortal.Controllers
 
 
         /// <summary>
-        /// Enroll a user into a course
+        /// Enroll a user into a course and send API request to Finance to create an invoice
         /// </summary>
         /// <param name="courseId"></param>
         /// <returns></returns>
         public JsonResult EnrollCourse(int courseId, double courseFee)
         {
+            var userId = User.Identity.GetUserId();
+
             var courseEnrollment = new CourseEnrollment()
             {
                 CourseId = courseId,
-                StudentId = User.Identity.GetUserId(),
+                StudentId = userId,
                 EnrollmentDate = DateTime.Now
             };
 
@@ -113,14 +116,42 @@ namespace StudentPortal.Controllers
 
             ApplicationDbContext.SaveChanges();
 
+
             var financeHelper = new FinancePortalHelper();
 
-            var userId = User.Identity.GetUserId();
-
             //Create Invoice in finance portal for Course fee
-            financeHelper.CreateInvoice(userId, courseFee);
+            financeHelper.CreateInvoice(GetStudentId(), courseFee);
 
             return Json(new { data = true });
+        }
+
+        public ActionResult GraduationEligibility()
+        {
+            var studentId = GetStudentId();
+            var financeHelper = new FinancePortalHelper();
+
+            var result = financeHelper.CheckGraduationEligibility(studentId);
+
+            ViewBag.Eligibility = result;
+
+            return View();
+        }
+
+        public ActionResult InvoiceList()
+        {
+            var studentId = GetStudentId();
+            var financeHelper = new FinancePortalHelper();
+
+            var invoices = financeHelper.GetAllStudentInvoice(studentId);
+            ViewBag.FinanceAppUrl = ConfigurationManager.AppSettings["FinanceAppUrl"];
+            return View(invoices);
+        }
+
+        private string GetStudentId()
+        {
+            var userId = User.Identity.GetUserId();
+            var user = ApplicationDbContext.Users.FirstOrDefault(c => c.Id == userId);
+            return user.StudentId;
         }
     }
 }

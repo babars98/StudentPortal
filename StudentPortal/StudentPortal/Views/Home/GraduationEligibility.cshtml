@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewBag.Title = "Graduation Eligibility";
+    var res = (bool)ViewBag.Eligibility;
+}
+
+<h4>Graduation Eligibility</h4>
+
+<div class="row">
+    <div class="col-md-6">
+        @if (res == false)
+        {
+            <h5><b>Congratulations!</b> you are Eiligible to Graduate. No pending invoice(s).</h5>
+        }
+
+        else
+        {
+            <h5>You are not eligible to Graduate. Please pay the outstanding invoice(s).</h5>
+        }
+    </div>
+</div>
+

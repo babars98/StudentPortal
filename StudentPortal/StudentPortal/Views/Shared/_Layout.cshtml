@@ -25,6 +25,8 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("Enrolled Courses", "EnrolledCourses", "Home")</li>
+                        <li>@Html.ActionLink("Graduation Eligibility", "GraduationEligibility", "Home")</li>
+                        <li>@Html.ActionLink("Invoices", "InvoiceList", "Home")</li>
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")
