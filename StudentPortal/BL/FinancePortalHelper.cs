@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using StudentPortal.Interface;
 using StudentPortal.Models;
+using System.Dynamic;
 
 namespace StudentPortal.BL
 {
@@ -30,7 +31,10 @@ namespace StudentPortal.BL
 
             var apiHelper = new APIHelper();
 
-            var response = apiHelper.PostMethod(url, userId);
+            dynamic obj = new ExpandoObject();
+            obj.StudentId = userId;
+
+            var response = apiHelper.PostMethod(url, obj);
 
             var result = JsonConvert.DeserializeObject<string>(response);
             return result;

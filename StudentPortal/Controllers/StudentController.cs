@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using StudentPortal.BL;
 using StudentPortal.Data;
+using StudentPortal.Interface;
 using StudentPortal.Models;
 using System.Security.Claims;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -13,14 +14,16 @@ namespace StudentPortal.Controllers
 
         private ApplicationDbContext _dbContext;
         private readonly IConfigurationRoot configuration;
+        private readonly IFinancePortalHelper _financePortalHelper;
 
         /// <summary>
         /// Overloaded constructor for Dependency Injection
         /// </summary>
         /// <param name="dbContext"></param>
-        public StudentController(ApplicationDbContext dbContext, IConfigurationBuilder builder)
+        public StudentController(ApplicationDbContext dbContext, IConfigurationBuilder builder, IFinancePortalHelper financePortalHelper)
         {
             _dbContext = dbContext;
+            _financePortalHelper = financePortalHelper;
 
             configuration = builder.AddJsonFile("appsettings.json")
                .AddEnvironmentVariables()
@@ -30,9 +33,8 @@ namespace StudentPortal.Controllers
         public IActionResult GraduationEligibility()
         {
             var studentId = GetStudentId();
-            var financeHelper = new FinancePortalHelper();
 
-            var result = financeHelper.CheckGraduationEligibility(studentId);
+            var result = _financePortalHelper.CheckGraduationEligibility(studentId);
 
             ViewBag.Eligibility = result;
 
@@ -42,9 +44,8 @@ namespace StudentPortal.Controllers
         public IActionResult InvoiceList()
         {
             var studentId = GetStudentId();
-            var financeHelper = new FinancePortalHelper();
 
-            var invoices = financeHelper.GetAllStudentInvoice(studentId);
+            var invoices = _financePortalHelper.GetAllStudentInvoice(studentId);
             ViewBag.FinanceAppUrl = configuration.GetValue<string>("FinanceAppUrl");
             return View(invoices);
         }

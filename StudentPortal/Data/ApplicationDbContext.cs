@@ -11,7 +11,7 @@ namespace StudentPortal.Data
         {
         }
 
-        public DbSet<Course> Course { get; set; }
-        public DbSet<CourseEnrollment> CourseEnrollment { get; set; }
+        public virtual DbSet<Course> Course { get; set; }
+        public virtual DbSet<CourseEnrollment> CourseEnrollment { get; set; }
     }
 }

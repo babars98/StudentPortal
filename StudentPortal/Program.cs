@@ -20,6 +20,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IConfigurationBuilder, ConfigurationBuilder>();
 builder.Services.AddScoped<IFinancePortalHelper, FinancePortalHelper>();
+builder.Services.AddScoped<ILibraryPortalHelper, LibraryPortalHelper>();
 
 var app = builder.Build();
 

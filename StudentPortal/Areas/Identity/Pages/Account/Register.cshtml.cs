@@ -35,6 +35,7 @@ namespace StudentPortal.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _dbContext;
         private readonly IFinancePortalHelper _financeHelper;
+        private readonly ILibraryPortalHelper _libraryPortalHelper;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -43,7 +44,8 @@ namespace StudentPortal.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             ApplicationDbContext dbContext,
-            IFinancePortalHelper financePortal)
+            IFinancePortalHelper financePortal,
+            ILibraryPortalHelper libraryPortalHelper)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -53,6 +55,7 @@ namespace StudentPortal.Areas.Identity.Pages.Account
             _emailSender = emailSender;
             _dbContext = dbContext;
             _financeHelper = financePortal;
+            _libraryPortalHelper = libraryPortalHelper;
         }
 
         /// <summary>
@@ -112,8 +115,6 @@ namespace StudentPortal.Areas.Identity.Pages.Account
         {
             try
             {
-
-
                 returnUrl ??= Url.Content("~/");
                 if (ModelState.IsValid)
                 {
@@ -137,6 +138,9 @@ namespace StudentPortal.Areas.Identity.Pages.Account
 
                         //Register User with Finance Portal
                         _financeHelper.RegisterUser(user.StudentId);
+
+                        //Register User with Library Portal
+                        _libraryPortalHelper.RegisterUser(user.StudentId, Input.Email);
 
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
