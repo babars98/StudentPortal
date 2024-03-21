@@ -1,0 +1,66 @@
+﻿@model IEnumerable<StudentPortal.Models.Invoice>
+@{
+    ViewBag.Title = "Invoice List";
+}
+
+<h2>Invoice List</h2>
+
+@if (Model == null || Model.Count() < 1)
+{
+    <h5>No invoice(s) to show.</h5>
+}
+
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Invoice Id
+                </th>
+                <th>
+                    Invoice Type
+                </th>
+                <th>
+                    Fee
+                </th>
+                <th>
+                    Payment Date
+                </th>
+                <th>
+                    Status
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invoice in Model)
+            {
+                <tr>
+                    <td>
+                        @invoice.InvoiceId
+                    </td>
+                    <td>
+                        @invoice.InvoiceType
+                    </td>
+                    <td>
+                        £@invoice.Fee
+                    </td>
+                    <td>
+                        @invoice.PaymentDate
+                    </td>
+                    <td>
+                        @invoice.IsPaid
+                    </td>
+                    <td>
+                        @if (invoice.IsPaid == StudentPortal.BL.InvoicePaymentStatus.OutStanding)
+                        {
+                            <a href="@ViewBag.FinanceAppUrl" class="btn btn-primary" target="_blank">Pay</a>
+                        }
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}

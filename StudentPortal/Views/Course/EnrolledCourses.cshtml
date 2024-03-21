@@ -1,0 +1,33 @@
+﻿@model IEnumerable<StudentPortal.Models.Course>
+@{
+    ViewBag.Title = "Enrolled Courses";
+    bool isEnrolled = Model.Count() > 0 ? true : false;
+}
+
+<h4>Enrolled Courses</h4>
+
+@if (isEnrolled == false)
+{
+    <br />
+    <h5>You are not enrolled in any course.</h5>
+}
+
+else
+{
+    <div class="container mt-2">
+        <div class="row">
+            @foreach (var course in Model)
+            {
+                <div class="col-md-3 col-sm-6 mb-3 text-center">
+                    <div class="card card-block">
+                        <img src="@course.ImageUrl" alt="Photo of sunset">
+                        <h5 class="card-title mt-3 mb-3">@course.Title</h5>
+                        <p class="card-text">@course.Description</p>
+                        @Html.ActionLink("View Course", "CourseDetail", new { courseId = course.CourseId }, new { @class = "btn btn-primary" })
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+}
